@@ -1,24 +1,47 @@
 # CATS — Course Application Tracking System
 
-A complete server-rendered Spring Boot application for the mandatory SA63 CATS workflow: login, applications, annual allowances, employee history, manager decisions, cancellation and attendance. Java 21, Spring Boot 4.1.1, Thymeleaf and Spring Data JPA. MySQL is supported; H2 provides a quick local demonstration.
+A complete server-rendered Spring Boot application for the mandatory SA63 CATS workflow: login, applications, annual allowances, employee history, manager decisions, cancellation and attendance. Java 21, Spring Boot 4.1.1, Thymeleaf and Spring Data JPA. MySQL is the default database; H2 is available through the explicit `demo` profile.
 
 ## Run locally
 
-Install JDK 21 and ensure `java` is on PATH. Maven is downloaded by the included wrapper on first use.
+Install JDK 21 and ensure `java` is on PATH. Start MySQL and create the database with `CREATE DATABASE cats;`. Use an existing MySQL account with permissions on this database, or create a dedicated `cats` account. Maven is downloaded by the included wrapper on first use.
 
 Windows PowerShell:
 
 ```powershell
+$env:DB_USER='cats' # replace with your MySQL username
+$env:DB_PASSWORD='your-local-password'
+$env:CATS_SEED='true' # local demo database only, to create the sample accounts
 .\mvnw.cmd spring-boot:run
 ```
 
 macOS/Linux:
 
 ```sh
+export DB_USER=cats
+export DB_PASSWORD='your-local-password'
+export CATS_SEED=true # local demo database only
 sh mvnw spring-boot:run
 ```
 
-Open http://localhost:8080/employee/login. The default `demo` profile uses a persistent H2 database in `data/` and seeds an empty database once.
+Open http://localhost:8080/employee/login. The default `mysql` profile connects to `jdbc:mysql://localhost:3306/cats`; override `DB_URL` if needed. `DB_PASSWORD` must be supplied. Demo seeding is off unless `CATS_SEED=true`, and only runs when the user table is empty. Changing profiles does not migrate existing H2 records to MySQL.
+
+If an IDE run configuration already sets `SPRING_PROFILES_ACTIVE=demo` or passes `--spring.profiles.active=demo`, remove that override or change it to `mysql`.
+
+### Run from Eclipse / Spring Tools
+
+Open **Run > Run Configurations**, select the application's Spring Boot App or Java Application configuration, and add `DB_USER`, `DB_PASSWORD` and (for local demo accounts) `CATS_SEED=true` on its **Environment** tab. Apply and run. Variables set in a separate PowerShell window are not automatically available to an already-running IDE.
+
+### Optional H2 demonstration
+
+To run without MySQL, explicitly select `demo`:
+
+```powershell
+$env:SPRING_PROFILES_ACTIVE='demo'
+.\mvnw.cmd spring-boot:run
+```
+
+This uses a persistent H2 database in `data/` and seeds it once. To return to the MySQL default in the same terminal, run `Remove-Item Env:SPRING_PROFILES_ACTIVE` or set it to `mysql`. A `.env` file is read by Docker Compose; a plain Maven or IDE launch does not automatically read it.
 
 | Account | Role | Password |
 |---|---|---|
@@ -40,10 +63,10 @@ Passwords above are deliberately public demo credentials and are stored as BCryp
 
 ## MySQL
 
-Create a database named `cats` and a database user with permissions on it. Configure environment variables:
+MySQL is selected by default. Create a database named `cats` and a database user with permissions on it. Configure environment variables:
 
 ```powershell
-$env:SPRING_PROFILES_ACTIVE='mysql'
+$env:SPRING_PROFILES_ACTIVE='mysql' # optional; also overrides an earlier demo selection
 $env:DB_URL='jdbc:mysql://localhost:3306/cats'
 $env:DB_USER='cats'
 $env:DB_PASSWORD='your-local-password'
@@ -62,7 +85,19 @@ For this learning project Hibernate creates/updates tables. Use versioned databa
 java -jar target/cats-1.0.0.jar
 ```
 
-On macOS/Linux replace `.\mvnw.cmd` with `sh mvnw`. GitHub Actions runs `verify` with Java 21. Integration tests use an isolated in-memory H2 database, a fixed clock, real repositories/services and rendered MVC pages. They exercise lifecycle transitions, validation, budget reservations, working days, ownership, stale edits, concurrent submissions, login and CSRF. MySQL/Docker deployment requires its own environment verification.
+On macOS/Linux replace `.\mvnw.cmd` with `sh mvnw`. GitHub Actions runs `verify` with Java 21. Integration tests explicitly activate the `test` profile and use an isolated in-memory H2 database, so they do not need a running MySQL server or DB_PASSWORD. They use a fixed clock, real repositories/services and rendered MVC pages, and exercise lifecycle transitions, validation, budget reservations, working days, ownership, stale edits, concurrent submissions, login and CSRF. MySQL/Docker deployment requires its own environment verification.
+
+## Pull updates into Eclipse and VS Code
+
+If both IDEs open the same folder, it is one Git checkout: pull once, then refresh Eclipse with F5. If they have separate cloned folders, run these commands inside each clone:
+
+```sh
+git status
+git switch main
+git pull --ff-only origin main
+```
+
+Commit your own work first, or temporarily save it with `git stash push -u -m "local work before pulling"` and restore it afterwards with `git stash pop`. If Git reports diverged branches or conflicts, resolve them before continuing; do not discard local work with a hard reset. In Eclipse, refresh the project and use **Maven > Update Project** after dependency changes. In VS Code, run these commands in the integrated terminal at the repository root. Stop and restart the application after pulling configuration changes.
 
 ## Architecture
 

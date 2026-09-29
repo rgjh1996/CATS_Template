@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import sg.edu.nus.cats.config.WebConfig;
 import sg.edu.nus.cats.dto.form.ApplicationForm;
@@ -29,10 +30,13 @@ import sg.edu.nus.cats.service.*;
 @SpringBootTest(
     properties = {
       "spring.datasource.url=jdbc:h2:mem:cats-test;MODE=MySQL;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=10000",
+      "spring.datasource.username=sa",
+      "spring.datasource.password=",
       "spring.jpa.hibernate.ddl-auto=create-drop",
       "cats.seed=false"
     })
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class CatsIntegrationTest {
   @TestConfiguration
   static class FixedTime {
