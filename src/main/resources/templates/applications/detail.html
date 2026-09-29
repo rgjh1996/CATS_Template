@@ -1,1 +1,59 @@
-<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Application details | CATS</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head><body><header th:replace="~{fragments/layout :: header}"></header><main><div th:replace="~{fragments/layout :: messages}"></div><div class="page-heading"><div><span class="eyebrow">APPLICATION DETAILS</span><h1>Your course application</h1></div><a th:href="@{/applications}">Back to history</a></div><div th:replace="~{fragments/layout :: details(${courseApplication})}"></div><section class="card actions" th:if="${courseApplication.status.name() == 'APPLIED' || courseApplication.status.name() == 'UPDATED'}"><a class="button primary" th:href="@{/applications/{id}/edit(id=${courseApplication.id})}">Edit application</a><form method="post" th:action="@{/applications/{id}/delete(id=${courseApplication.id})}"><input type="hidden" name="_csrf" th:value="${csrfToken}"><button class="danger">Withdraw application</button></form></section><section class="card actions" th:if="${courseApplication.status.name() == 'APPROVED'}"><a class="button primary" th:if="${today.isAfter(courseApplication.endDate)}" th:href="@{/applications/{id}/complete(id=${courseApplication.id})}">Mark attended</a><form method="post" th:action="@{/applications/{id}/cancel(id=${courseApplication.id})}"><input type="hidden" name="_csrf" th:value="${csrfToken}"><button class="danger">Cancel application</button></form></section></main><footer>CATS · Course Application Tracking System</footer></body></html>
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      Application details | CATS
+    </title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+  </head>
+  <body>
+    <header th:replace="~{fragments/layout :: header}">
+    </header>
+    <main>
+      <div th:replace="~{fragments/layout :: messages}">
+      </div>
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">
+            APPLICATION DETAILS
+          </span>
+          <h1>
+            Your course application
+          </h1>
+        </div>
+        <a th:href="@{/applications}">
+          Back to history
+        </a>
+      </div>
+      <div th:replace="~{fragments/layout :: details(${courseApplication})}">
+      </div>
+      <section class="card actions" th:if="${courseApplication.status.name() == 'APPLIED' || courseApplication.status.name() == 'UPDATED'}">
+        <a class="button primary" th:href="@{/applications/{id}/edit(id=${courseApplication.id})}">
+          Edit application
+        </a>
+        <form method="post" th:action="@{/applications/{id}/delete(id=${courseApplication.id})}">
+          <input type="hidden" name="_csrf" th:value="${csrfToken}">
+          <button class="danger">
+            Withdraw application
+          </button>
+        </form>
+      </section>
+      <section class="card actions" th:if="${courseApplication.status.name() == 'APPROVED'}">
+        <a class="button primary" th:if="${today.isAfter(courseApplication.endDate)}" th:href="@{/applications/{id}/complete(id=${courseApplication.id})}">
+          Mark attended
+        </a>
+        <form method="post" th:action="@{/applications/{id}/cancel(id=${courseApplication.id})}">
+          <input type="hidden" name="_csrf" th:value="${csrfToken}">
+          <button class="danger">
+            Cancel application
+          </button>
+        </form>
+      </section>
+    </main>
+    <footer>
+      CATS · Course Application Tracking System
+    </footer>
+  </body>
+</html>

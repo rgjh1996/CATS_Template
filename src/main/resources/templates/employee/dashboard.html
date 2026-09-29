@@ -1,1 +1,51 @@
-<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Overview | CATS</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head><body><header th:replace="~{fragments/layout :: header}"></header><main><div th:replace="~{fragments/layout :: messages}"></div><div class="page-heading"><div><span class="eyebrow">YOUR DEVELOPMENT</span><h1 th:text="|Hello, ${currentUser.name()}|"></h1><p class="muted">Plan your next course and track your applications.</p></div><a class="button primary" th:href="@{/applications/new}">Apply for a course</a></div><div th:replace="~{fragments/layout :: usage(${usage})}"></div><section class="card"><div class="section-heading"><h2>This year's applications</h2><a th:href="@{/applications}">View history</a></div><div th:replace="~{fragments/layout :: table(${applications}, false)}"></div></section></main><footer>CATS · Course Application Tracking System</footer></body></html>
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      Overview | CATS
+    </title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+  </head>
+  <body>
+    <header th:replace="~{fragments/layout :: header}">
+    </header>
+    <main>
+      <div th:replace="~{fragments/layout :: messages}">
+      </div>
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">
+            YOUR DEVELOPMENT
+          </span>
+          <h1 th:text="|Hello, ${currentUser.name()}|">
+          </h1>
+          <p class="muted">
+            Plan your next course and track your applications.
+          </p>
+        </div>
+        <a class="button primary" th:href="@{/applications/new}">
+          Apply for a course
+        </a>
+      </div>
+      <div th:replace="~{fragments/layout :: usage(${usage})}">
+      </div>
+      <section class="card">
+        <div class="section-heading">
+          <h2>
+            This year's applications
+          </h2>
+          <a th:href="@{/applications}">
+            View history
+          </a>
+        </div>
+        <div th:replace="~{fragments/layout :: table(${applications}, false)}">
+        </div>
+      </section>
+    </main>
+    <footer>
+      CATS · Course Application Tracking System
+    </footer>
+  </body>
+</html>

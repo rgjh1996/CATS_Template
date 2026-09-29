@@ -1,1 +1,35 @@
-<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Unable to complete request | CATS</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head><body><header th:replace="~{fragments/layout :: header}"></header><main><div th:replace="~{fragments/layout :: messages}"></div><section class="card form-card"><span class="eyebrow">REQUEST NOT COMPLETED</span><h1>We couldn't complete that action</h1><p th:text="${message}"></p><a class="button primary" th:href="@{/}">Return to overview</a></section></main><footer>CATS · Course Application Tracking System</footer></body></html>
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      Unable to complete request | CATS
+    </title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+  </head>
+  <body>
+    <header th:replace="~{fragments/layout :: header}">
+    </header>
+    <main>
+      <div th:replace="~{fragments/layout :: messages}">
+      </div>
+      <section class="card form-card">
+        <span class="eyebrow">
+          REQUEST NOT COMPLETED
+        </span>
+        <h1>
+          We couldn't complete that action
+        </h1>
+        <p th:text="${message}">
+        </p>
+        <a class="button primary" th:href="@{/}">
+          Return to overview
+        </a>
+      </section>
+    </main>
+    <footer>
+      CATS · Course Application Tracking System
+    </footer>
+  </body>
+</html>

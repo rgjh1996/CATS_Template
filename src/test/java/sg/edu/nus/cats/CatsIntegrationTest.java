@@ -260,12 +260,14 @@ class CatsIntegrationTest {
   void concurrentSubmissionsCannotOverspend() throws Exception {
     var pool = Executors.newFixedThreadPool(2);
     var gate = new CountDownLatch(1);
+    var sequence = new java.util.concurrent.atomic.AtomicInteger();
     try {
       Callable<Boolean> task =
           () -> {
             gate.await();
             try {
-              service.submit(alice.getId(), form("2026-09-07", "2026-09-07", "1500"));
+              String date = sequence.getAndIncrement() == 0 ? "2026-09-07" : "2026-09-08";
+              service.submit(alice.getId(), form(date, date, "1500"));
               return true;
             } catch (BusinessException e) {
               return false;
@@ -280,6 +282,25 @@ class CatsIntegrationTest {
     } finally {
       pool.shutdownNow();
     }
+  }
+
+  @Test
+  void failedUpdateRollsBackAndManagerContextExcludesApplicant() {
+    var original = service.submit(alice.getId(), form("2026-09-07", "2026-09-07", "2000"));
+    var update = service.toForm(original);
+    update.setCourseTitle("Must not persist");
+    update.setCourseFee(new BigDecimal("2001"));
+    assertThatThrownBy(() -> service.update(alice.getId(), original.getId(), update))
+        .isInstanceOf(BusinessException.class);
+    assertThat(service.getDetails(alice.getId(), original.getId()).getCourseTitle())
+        .isEqualTo("Java training");
+    var teammate = service.submit(charlie.getId(), form("2026-09-07", "2026-09-07", "100"));
+    approval.approve(bob.getId(), teammate.getId(), "Relevant");
+    var context = approval.getApprovalContext(bob.getId(), original.getId());
+    assertThat(context.otherTeamApprovedCourses())
+        .extracting(CourseApplication::getId)
+        .containsExactly(teammate.getId());
+    assertThat(context.annualUsage().get(2026).remainingBudget()).isEqualByComparingTo("0");
   }
 
   @Test

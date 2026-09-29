@@ -1,1 +1,58 @@
-<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Team approvals | CATS</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head><body><header th:replace="~{fragments/layout :: header}"></header><main><div th:replace="~{fragments/layout :: messages}"></div><div class="page-heading"><div><span class="eyebrow">TEAM DEVELOPMENT</span><h1>Applications for approval</h1><p class="muted">Review course requests from your reporting employees.</p></div></div><section class="card" th:if="${groups.isEmpty()}"><p class="empty">You're all caught up. No applications await your decision.</p></section><section class="card" th:each="group:${groups}"><h2 th:text="${group.key}"></h2><div th:replace="~{fragments/layout :: table(${group.value}, true)}"></div></section><section class="card"><h2>Subordinate course history</h2><div class="team-links"><a th:each="employee:${team}" th:href="@{/manager/employees/{id}/history(id=${employee.id})}" th:text="${employee.name}"></a><p th:if="${#lists.isEmpty(team)}" class="muted">No reporting employees assigned.</p></div></section></main><footer>CATS · Course Application Tracking System</footer></body></html>
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      Team approvals | CATS
+    </title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+  </head>
+  <body>
+    <header th:replace="~{fragments/layout :: header}">
+    </header>
+    <main>
+      <div th:replace="~{fragments/layout :: messages}">
+      </div>
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">
+            TEAM DEVELOPMENT
+          </span>
+          <h1>
+            Applications for approval
+          </h1>
+          <p class="muted">
+            Review course requests from your reporting employees.
+          </p>
+        </div>
+      </div>
+      <section class="card" th:if="${groups.isEmpty()}">
+        <p class="empty">
+          You're all caught up. No applications await your decision.
+        </p>
+      </section>
+      <section class="card" th:each="group:${groups}">
+        <h2 th:text="${group.key}">
+        </h2>
+        <div th:replace="~{fragments/layout :: table(${group.value}, true)}">
+        </div>
+      </section>
+      <section class="card">
+        <h2>
+          Subordinate course history
+        </h2>
+        <div class="team-links">
+          <a th:each="employee:${team}" th:href="@{/manager/employees/{id}/history(id=${employee.id})}" th:text="${employee.name}">
+          </a>
+          <p th:if="${#lists.isEmpty(team)}" class="muted">
+            No reporting employees assigned.
+          </p>
+        </div>
+      </section>
+    </main>
+    <footer>
+      CATS · Course Application Tracking System
+    </footer>
+  </body>
+</html>
